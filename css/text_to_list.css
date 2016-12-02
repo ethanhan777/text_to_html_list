@@ -29,8 +29,12 @@
   border-right: none;
   margin-bottom:10px;
 }
-.text-to-list-preview li {
+.text-to-list-preview li,
+.text-to-list-preview .checklist-wrap {
   padding:5px 0;
+}
+.text-to-list-preview .checklist-wrap input[type=checkbox]{
+  margin-right: 10px;
 }
 
 .text-to-list-input {
@@ -40,7 +44,7 @@
   border: solid 1px #ccc;
 }
 
-.text-to-list-preview li i.fa-times {
+.text-to-list-preview i.fa-times {
   margin-left: 10px;
 }
 

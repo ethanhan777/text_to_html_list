@@ -5,8 +5,7 @@
       if (typeof settings.text_to_list === 'undefined') {
         return false;
       }
-
-      $.each(settings.text_to_list, function(index, field_name){
+      $.each(settings.text_to_list, function(field_name, list_type){
         if ($('.text-to-list-' + field_name + '-field').length > 0
                 && $('.text-to-list-' + field_name + '-field .form-item .form-textarea').val().length > 0) {
           var text = $('.text-to-list-' + field_name + '-field .form-item .form-textarea').val();
@@ -16,14 +15,16 @@
         $('.text-to-list-' + field_name + '-field-input').keypress(function(e){
           if ($(this).val().length > 0 && e.keyCode == 13) {
             var list_output = '';
-            //TODO: convert cleanHTML funciton to plugin.
-            console.log(nl2br($(this).val()));
             var entered_text = nl2br($(this).val()).split("<br>");
-            console.log(entered_text);
             $.each(entered_text, function(key, value) {
               value = $.trim(value);
               if (value.length != 0) {
-                list_output += '<li>' + value + '<i class="fa fa-times" aria-hidden="true"></i></li>';
+                if (list_type == 2) {
+                  list_output += '<div class="checklist-wrap"><input type="checkbox">' + value + '<i class="fa fa-times" aria-hidden="true"></i></div>';
+                }
+                else {
+                  list_output += '<li>' + value + '<i class="fa fa-times" aria-hidden="true"></i></li>';
+                }
               }
             });
             $('.text-to-list-' + field_name + '-field-preview .text-to-list-' + field_name + '-sortable').append(list_output);
@@ -43,7 +44,7 @@
           $('.text-to-list-' + field_name + '-field .form-item .form-textarea').val( $('.text-to-list-' + field_name + '-field-preview').html());
         });
 
-        $('.text-to-list-' + field_name + '-sortable li i.fa-times').live('click', function() {
+        $('.text-to-list-' + field_name + '-sortable i.fa-times').live('click', function() {
           $(this).parent().remove();
           $('.text-to-list-' + field_name + '-field .form-item .form-textarea').val( $('.text-to-list-' + field_name + '-field-preview').html());
         });

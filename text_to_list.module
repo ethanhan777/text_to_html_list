@@ -35,7 +35,7 @@ function text_to_list_field_widget_settings_form($field, $instance) {
       '#options' => array(
         0 => t('Bullet'),
         1 => t('Number'),
-        //TODO: add checkbox type for checklist.
+        2 => t('Checklist'),
       ),
       '#default_value' => $settings['list_type'],
       '#description' => t('Bulleted list by default.'),
@@ -62,6 +62,9 @@ function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance,
       $list_type = isset($settings['list_type']) ? $settings['list_type'] : 0;
       if ($list_type == 1) {
         $list_type_html = 'ol';
+      }
+      elseif ($list_type == 2) {
+        $list_type_html = 'div';
       }
 
       $prefix = theme('text_to_list', array(
@@ -92,7 +95,7 @@ function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance,
         '#suffix' => '</div>',
         '#rows' => $instance['widget']['settings']['rows'],
       );
-      
+
       // Conditionally alter the form element's type if text processing is enabled.
       if ($instance['settings']['text_processing']) {
         $element = $main_widget;
@@ -107,7 +110,7 @@ function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance,
       break;
   }
 
-  drupal_add_js(array('text_to_list' => array($field_name)), 'setting');
+  drupal_add_js(array('text_to_list' => array($field_name => $list_type)), 'setting');
   $fontawesome_cdn = 'https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css';
   drupal_add_css($fontawesome_cdn, array('type' => 'external'));
 
@@ -151,11 +154,11 @@ function text_to_list_field_formatter_info() {
 function text_to_list_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
   $settings = $display['settings'];
-  
+
   switch ($display['type']) {
     case 'text_to_list_formatter':
       foreach ($items as $delta => $item) {
-        $markup = strip_tags($item['value'], '<ul><ol><li>');
+        $markup = strip_tags($item['value'], '<ul><ol><li><div><input>');
         $markup = stripHTMLAttr($markup, 'class');
 
         $element[$delta] = array(

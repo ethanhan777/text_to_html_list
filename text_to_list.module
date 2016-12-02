@@ -1,0 +1,198 @@
+<?php
+
+/**
+ * @file
+ * Defines simple text_to_list field widget.
+ */
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function text_to_list_field_widget_info() {
+  return array(
+    'text_to_list' => array(
+      'label' => t('Text to List'),
+      'field types' => array('text_long'),
+      'settings' => array('rows' => 3),
+      'behaviors' => array(
+        'default value' => FIELD_BEHAVIOR_NONE
+      )
+    )
+  );
+}
+
+/**
+ * Implements hook_field_settings_form().
+ */
+function text_to_list_field_widget_settings_form($field, $instance) {
+  $widget = $instance['widget'];
+  $settings = $widget['settings'];
+
+  if ($widget['type'] == 'text_to_list') {
+    $form['list_type'] = array(
+      '#type' => 'select',
+      '#title' => t('List Type'),
+      '#options' => array(
+        0 => t('Bullet'),
+        1 => t('Number'),
+        //TODO: add checkbox type for checklist.
+      ),
+      '#default_value' => $settings['list_type'],
+      '#description' => t('Bulleted list by default.'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hooks_field_widget_form().
+ */
+function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $key = $instance['widget']['type'] ? $instance['widget']['type'] : '';
+  $label = $element['#title'] ? $element['#title'] : '';
+  $placeholder = $element['#description'] ? $element['#description'] : '';
+  $unique_class_name = $element['#field_parents'] ? join('-', $element['#field_parents']) . $element['#weight'] : $element['#weight'];
+  $field_name = $instance['field_name'] ? $instance['field_name'] . '-' . $unique_class_name : '';
+  $settings = $instance['widget']['settings'];
+
+  switch ($key) {
+    case 'text_to_list':
+      $list_type_html = 'ul';
+      $list_type = isset($settings['list_type']) ? $settings['list_type'] : 0;
+      if ($list_type == 1) {
+        $list_type_html = 'ol';
+      }
+
+      $prefix = theme('text_to_list', array(
+        'key' => $key,
+        'label' => $label,
+        'placeholder' => $placeholder,
+        'field_name' => $field_name,
+        'list_type_html' => $list_type_html,
+      ));
+
+      $module_path = drupal_get_path('module', 'text_to_list');
+      $main_widget = $element + array(
+        '#attributes' => array(
+          'class' => array('edit-text-to-list'),
+        ),
+        '#type' => 'textarea',
+        '#title' => $label,
+        '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : '',
+        '#attached' => array(
+          'js' => array($module_path . '/js/text_to_list.js'),
+          'css' => array($module_path . '/css/text_to_list.css'),
+          'library' => array(
+            array('system', 'ui.sortable'),
+            array('system', 'ui.sortupdate'),
+          ),
+        ),
+        '#prefix' => $prefix,
+        '#suffix' => '</div>',
+        '#rows' => $instance['widget']['settings']['rows'],
+      );
+      
+      // Conditionally alter the form element's type if text processing is enabled.
+      if ($instance['settings']['text_processing']) {
+        $element = $main_widget;
+        $element['#type'] = 'text_format';
+        $element['#format'] = 'full_html';
+        $element['#base_type'] = $main_widget['#type'];
+      }
+      else {
+        $element['value'] = $main_widget;
+      }
+
+      break;
+  }
+
+  drupal_add_js(array('text_to_list' => array($field_name)), 'setting');
+  $fontawesome_cdn = 'https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css';
+  drupal_add_css($fontawesome_cdn, array('type' => 'external'));
+
+  return $element;
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function text_to_list_theme() {
+  return array(
+    'text_to_list' => array(
+      'template' => 'theme/text_to_list',
+      'variables' => array(
+        'key' => NULL,
+        'label' => NULL,
+        'placeholder' => NULL,
+        'field_name' => NULL,
+        'list_type_html' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function text_to_list_field_formatter_info() {
+  return array(
+    'text_to_list_formatter' => array(
+      'label' => t('Text to HTML List'),
+      'field types' => array('text_long'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function text_to_list_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  $settings = $display['settings'];
+  
+  switch ($display['type']) {
+    case 'text_to_list_formatter':
+      foreach ($items as $delta => $item) {
+        $markup = strip_tags($item['value'], '<ul><ol><li>');
+        $markup = stripHTMLAttr($markup, 'class');
+
+        $element[$delta] = array(
+          '#markup' => $markup,
+        );
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_display_alter().
+ */
+function text_to_list_field_display_alter(&$display, $context){
+  if ($context['instance']['widget']['type'] == 'text_to_list') {
+    $display['type'] = 'text_to_list_formatter';
+    $display['module'] = 'text_to_list';
+  }
+}
+
+/**
+ * Helper function to remove HTML attributes.
+ *
+ * @param string $html
+ * @param string $attr
+ * @return string
+ */
+function stripHTMLAttr($html, $attr) {
+  $dom = new DOMDocument();
+  $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+  $xpath = new DOMXPath($dom);
+  $nodes = $xpath->query('//*[@'.$attr.']');
+  foreach ($nodes as $node) {
+    $node->removeAttribute($attr);
+  }
+
+  return $dom->saveHTML();
+}

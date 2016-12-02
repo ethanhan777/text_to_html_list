@@ -1,0 +1,4 @@
+name = Text to HTML list
+description = Long-text field widget that turns text into HTML list.
+core = 7.x
+package = Fields

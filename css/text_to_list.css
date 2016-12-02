@@ -1,0 +1,50 @@
+/* list field */
+.text-to-list-field {
+  position: relative;
+}
+.text-to-list-field label {
+  text-transform: capitalize;
+  font-size:1.25em;
+}
+
+.form-item label.preview-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #777;
+  line-height: 1em;
+}
+.text-to-list-preview {
+  display: block;
+  min-height: 100px;
+  border: solid 1px #ccc;
+  background-color: #eee;
+  border-radius:3px;
+  padding:20px 0 0 15px;
+  font-size:1.25em;
+  max-height: 500px;
+  overflow-y: scroll;
+  border-right: none;
+  margin-bottom:10px;
+}
+.text-to-list-preview li {
+  padding:5px 0;
+}
+
+.text-to-list-input {
+  display: block;
+  width: 100%;
+  min-height: 30px;
+  border: solid 1px #ccc;
+}
+
+.text-to-list-preview li i.fa-times {
+  margin-left: 10px;
+}
+
+.text-to-list-field .text-format-wrapper,
+.text-to-list-field .form-item{
+  display: none;
+}

@@ -4,12 +4,12 @@
  * @file
  * Default text to list suffix template.
  *
+ * Variables available:
  * - $key: machine name of field widget.
  * - $field_name: name of field.
  * - $label: field label.
  * - $placeholder: help text of field.
  * - $list_type_html: Either ul or ol.
- *
  */
 ?>
 

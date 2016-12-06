@@ -24,7 +24,7 @@ Functionality
 --------------------------
 This is a field widget that allows site editors to input all list content into 
 a single field and automatically creates individual list items. 
-Site editors can add list items one by one or copy and paste from a varity of 
+Site editors can add list items one by one or copy and paste from a variety of 
 sources, including Word, Excel, Google Docs, and websites, providing that 
 content is on separate lines in the source content. 
 All list items can then be reordered or removed through the UI, as required by 

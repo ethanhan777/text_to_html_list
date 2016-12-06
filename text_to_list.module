@@ -194,12 +194,12 @@ function text_to_list_field_display_alter(&$display, $context) {
  */
 function text_to_list_strip_html_attr($html, $attr) {
   $dom = new DOMDocument();
-  $dom -> loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+  $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
   $xpath = new DOMXPath($dom);
-  $nodes = $xpath -> query('//*[@'.$attr.']');
+  $nodes = $xpath->query('//*[@' . $attr . ']');
   foreach ($nodes as $node) {
-    $node -> removeAttribute($attr);
+    $node->removeAttribute($attr);
   }
 
-  return $dom -> saveHTML();
+  return $dom->saveHTML();
 }

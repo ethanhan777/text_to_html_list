@@ -15,9 +15,9 @@ function text_to_list_field_widget_info() {
       'field types' => array('text_long'),
       'settings' => array('rows' => 3),
       'behaviors' => array(
-        'default value' => FIELD_BEHAVIOR_NONE
-      )
-    )
+        'default value' => FIELD_BEHAVIOR_NONE,
+      ),
+    ),
   );
 }
 
@@ -52,7 +52,7 @@ function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance,
   $key = $instance['widget']['type'] ? $instance['widget']['type'] : '';
   $label = $element['#title'] ? $element['#title'] : '';
   $placeholder = $element['#description'] ? $element['#description'] : '';
-  $unique_class_name = $element['#field_parents'] ? join('-', $element['#field_parents']) . $element['#weight'] : $element['#weight'];
+  $unique_class_name = $element['#field_parents'] ? implode('-', $element['#field_parents']) . $element['#weight'] : $element['#weight'];
   $field_name = $instance['field_name'] ? $instance['field_name'] . '-' . $unique_class_name : '';
   $settings = $instance['widget']['settings'];
 
@@ -96,7 +96,8 @@ function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance,
         '#rows' => $instance['widget']['settings']['rows'],
       );
 
-      // Conditionally alter the form element's type if text processing is enabled.
+      // Conditionally alter the form element's type if
+      // text processing is enabled.
       if ($instance['settings']['text_processing']) {
         $element = $main_widget;
         $element['#type'] = 'text_format';
@@ -153,13 +154,12 @@ function text_to_list_field_formatter_info() {
  */
 function text_to_list_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-  $settings = $display['settings'];
 
   switch ($display['type']) {
     case 'text_to_list_formatter':
       foreach ($items as $delta => $item) {
         $markup = strip_tags($item['value'], '<ul><ol><li><div><input>');
-        $markup = stripHTMLAttr($markup, 'class');
+        $markup = text_to_list_strip_html_attr($markup, 'class');
 
         $element[$delta] = array(
           '#markup' => $markup,
@@ -174,7 +174,7 @@ function text_to_list_field_formatter_view($entity_type, $entity, $field, $insta
 /**
  * Implements hook_field_display_alter().
  */
-function text_to_list_field_display_alter(&$display, $context){
+function text_to_list_field_display_alter(&$display, $context) {
   if ($context['instance']['widget']['type'] == 'text_to_list') {
     $display['type'] = 'text_to_list_formatter';
     $display['module'] = 'text_to_list';
@@ -185,17 +185,21 @@ function text_to_list_field_display_alter(&$display, $context){
  * Helper function to remove HTML attributes.
  *
  * @param string $html
+ *   HTML string.
  * @param string $attr
+ *   Name of attribute to be removed.
+ *
  * @return string
+ *   Filtered HTML string.
  */
-function stripHTMLAttr($html, $attr) {
+function text_to_list_strip_html_attr($html, $attr) {
   $dom = new DOMDocument();
-  $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+  $dom -> loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
   $xpath = new DOMXPath($dom);
-  $nodes = $xpath->query('//*[@'.$attr.']');
+  $nodes = $xpath -> query('//*[@'.$attr.']');
   foreach ($nodes as $node) {
-    $node->removeAttribute($attr);
+    $node -> removeAttribute($attr);
   }
 
-  return $dom->saveHTML();
+  return $dom -> saveHTML();
 }

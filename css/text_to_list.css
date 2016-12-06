@@ -4,7 +4,7 @@
 }
 .text-to-list-field label {
   text-transform: capitalize;
-  font-size:1.25em;
+  font-size: 1.25em;
 }
 
 .form-item label.preview-label {
@@ -21,19 +21,19 @@
   min-height: 100px;
   border: solid 1px #ccc;
   background-color: #eee;
-  border-radius:3px;
-  padding:20px 0 0 15px;
-  font-size:1.25em;
+  border-radius: 3px;
+  padding: 20px 0 0 15px;
+  font-size: 1.25em;
   max-height: 500px;
   overflow-y: scroll;
   border-right: none;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
 .text-to-list-preview li,
 .text-to-list-preview .checklist-wrap {
-  padding:5px 0;
+  padding: 5px 0;
 }
-.text-to-list-preview .checklist-wrap input[type=checkbox]{
+.text-to-list-preview .checklist-wrap input[type=checkbox] {
   margin-right: 10px;
 }
 
@@ -49,6 +49,6 @@
 }
 
 .text-to-list-field .text-format-wrapper,
-.text-to-list-field .form-item{
+.text-to-list-field .form-item {
   display: none;
 }

@@ -1,5 +1,5 @@
 (function ($) {
-  "use strict";
+  'use strict';
 
   Drupal.behaviors.text_to_list = {
     attach: function (context, settings) {

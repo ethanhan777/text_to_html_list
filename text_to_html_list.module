@@ -166,7 +166,7 @@ function text_to_html_list_field_formatter_view($entity_type, $entity, $field, $
           'ul',
           'ol',
           'li',
-          'input'
+          'input',
         );
         $markup = filter_xss($item['value'], $allowed_tags);
         $markup = text_to_html_list_strip_html_attr($markup, 'class');
@@ -228,7 +228,7 @@ function text_to_html_list_field_widget_form_alter(&$element, &$form_state, $con
       'ul',
       'ol',
       'li',
-      'input'
+      'input',
     );
     $element['value']['#default_value'] = filter_xss($element['value']['#default_value'], $allowed_tags);
   }

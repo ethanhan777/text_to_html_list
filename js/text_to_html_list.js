@@ -16,7 +16,7 @@
 
         $('.text-to-list-' + field_name + '-field-input').keypress(function (e) {
           if ($(this).val().length > 0 && e.keyCode === 13) {
-            var entered_text = nl2br($(this).val()).split('<br>');
+            var entered_text = nl2br(clean_html($(this).val())).split('<br>');
             var list_output = generate_list_output(entered_text, list_type);
             $('.text-to-list-' + field_name + '-field-preview .text-to-list-' + field_name + '-sortable').append(list_output);
             $(this).val('');
@@ -32,6 +32,8 @@
         }
 
         $('.text-to-list-' + field_name + '-sortable').bind('sortupdate', function () {
+          $('.text-to-list-' + field_name + '-field-preview div').removeAttr('style');
+          $('.text-to-list-' + field_name + '-field-preview li').removeAttr('style');
           $('.text-to-list-' + field_name + '-field .form-item .form-textarea').val($('.text-to-list-' + field_name + '-field-preview').html());
         });
 
@@ -55,6 +57,16 @@
           }
         });
         return list_output;
+      }
+
+      function clean_html(input) {
+        var bad_tags = ['style', 'script', 'applet', 'embed', 'iframe', 'noframes', 'noscript'];
+        var output = input;
+        for (var i=0; i< bad_tags.length; i++) {
+          var tag_stripper = new RegExp('<'+bad_tags[i]+'.*?'+bad_tags[i]+'(.*?)>', 'gi');
+          output = output.replace(tag_stripper, '');
+        }
+        return output;
       }
 
       function nl2br(str) {

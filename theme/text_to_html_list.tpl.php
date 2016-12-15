@@ -22,5 +22,7 @@
   <div class="text-to-list-preview text-to-list-<?php print $field_name ?>-field-preview">
     <<?php print $list_type_html ?> class="text-to-list-<?php print $field_name ?>-sortable"></<?php print $list_type_html ?>>
   </div>
+  <!--help text-->
+  <p class="help-text">List items are draggable to change order.</p>
   <!--text input-->
   <textarea class="text-to-list-input text-to-list-<?php print $field_name ?>-field-input"></textarea>

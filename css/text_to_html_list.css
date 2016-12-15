@@ -7,15 +7,20 @@
   font-size: 1.25em;
 }
 
-.form-item label.preview-label {
+.text-to-list-field label.preview-label {
   position: absolute;
-  top: 10px;
+  top: 30px;
   left: 10px;
   font-size: 1em;
   font-weight: bold;
   color: #777;
   line-height: 1em;
 }
+
+table .text-to-list-field label.preview-label {
+  top: 10px;
+}
+
 .text-to-list-preview {
   display: block;
   min-height: 100px;
@@ -29,12 +34,20 @@
   border-right: none;
   margin-bottom: 10px;
 }
+.text-to-list-preview ul {
+  cursor: pointer;
+}
 .text-to-list-preview li,
 .text-to-list-preview .checklist-wrap {
   padding: 5px 0;
 }
 .text-to-list-preview .checklist-wrap input[type=checkbox] {
   margin-right: 10px;
+}
+
+.help-text {
+  color: #777;
+  margin-bottom: 10px;
 }
 
 .text-to-list-input {

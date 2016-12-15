@@ -8,10 +8,10 @@
 /**
  * Implements hook_field_widget_info().
  */
-function text_to_list_field_widget_info() {
+function text_to_html_list_field_widget_info() {
   return array(
     'text_to_list' => array(
-      'label' => t('Text to List'),
+      'label' => t('Text to HTML List'),
       'field types' => array('text_long'),
       'settings' => array('rows' => 3),
       'behaviors' => array(
@@ -24,7 +24,7 @@ function text_to_list_field_widget_info() {
 /**
  * Implements hook_field_settings_form().
  */
-function text_to_list_field_widget_settings_form($field, $instance) {
+function text_to_html_list_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
   $settings = $widget['settings'];
 
@@ -37,7 +37,7 @@ function text_to_list_field_widget_settings_form($field, $instance) {
         1 => t('Number'),
         2 => t('Checklist'),
       ),
-      '#default_value' => $settings['list_type'],
+      '#default_value' => (isset($settings['list_type'])) ? $settings['list_type'] : 0 ,
       '#description' => t('Bulleted list by default.'),
     );
   }
@@ -48,7 +48,7 @@ function text_to_list_field_widget_settings_form($field, $instance) {
 /**
  * Implements hooks_field_widget_form().
  */
-function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   $key = $instance['widget']['type'] ? $instance['widget']['type'] : '';
   $label = $element['#title'] ? $element['#title'] : '';
   $placeholder = $element['#description'] ? $element['#description'] : '';
@@ -75,7 +75,7 @@ function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance,
         'list_type_html' => $list_type_html,
       ));
 
-      $module_path = drupal_get_path('module', 'text_to_list');
+      $module_path = drupal_get_path('module', 'text_to_html_list');
       $main_widget = $element + array(
         '#attributes' => array(
           'class' => array('edit-text-to-list'),
@@ -84,8 +84,8 @@ function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance,
         '#title' => $label,
         '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : '',
         '#attached' => array(
-          'js' => array($module_path . '/js/text_to_list.js'),
-          'css' => array($module_path . '/css/text_to_list.css'),
+          'js' => array($module_path . '/js/text_to_html_list.js'),
+          'css' => array($module_path . '/css/text_to_html_list.css'),
           'library' => array(
             array('system', 'ui.sortable'),
             array('system', 'ui.sortupdate'),
@@ -122,10 +122,10 @@ function text_to_list_field_widget_form(&$form, &$form_state, $field, $instance,
 /**
  * Implements hook_theme().
  */
-function text_to_list_theme() {
+function text_to_html_list_theme() {
   return array(
     'text_to_list' => array(
-      'template' => 'theme/text_to_list',
+      'template' => 'theme/text_to_html_list',
       'variables' => array(
         'key' => NULL,
         'label' => NULL,
@@ -140,7 +140,7 @@ function text_to_list_theme() {
 /**
  * Implements hook_field_formatter_info().
  */
-function text_to_list_field_formatter_info() {
+function text_to_html_list_field_formatter_info() {
   return array(
     'text_to_list_formatter' => array(
       'label' => t('Text to HTML List'),
@@ -152,14 +152,15 @@ function text_to_list_field_formatter_info() {
 /**
  * Implements hook_field_formatter_view().
  */
-function text_to_list_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+function text_to_html_list_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
 
   switch ($display['type']) {
     case 'text_to_list_formatter':
       foreach ($items as $delta => $item) {
-        $markup = strip_tags($item['value'], '<ul><ol><li><div><input>');
-        $markup = text_to_list_strip_html_attr($markup, 'class');
+        $allowed_tags = array('a', 'strong', 'em', 'div', 'ul', 'ol', 'li', 'input');
+        $markup = filter_xss($item['value'], $allowed_tags);
+        $markup = text_to_html_list_strip_html_attr($markup, 'class');
 
         $element[$delta] = array(
           '#markup' => $markup,
@@ -174,7 +175,7 @@ function text_to_list_field_formatter_view($entity_type, $entity, $field, $insta
 /**
  * Implements hook_field_display_alter().
  */
-function text_to_list_field_display_alter(&$display, $context) {
+function text_to_html_list_field_display_alter(&$display, $context) {
   if ($context['instance']['widget']['type'] == 'text_to_list') {
     $display['type'] = 'text_to_list_formatter';
     $display['module'] = 'text_to_list';
@@ -192,7 +193,7 @@ function text_to_list_field_display_alter(&$display, $context) {
  * @return string
  *   Filtered HTML string.
  */
-function text_to_list_strip_html_attr($html, $attr) {
+function text_to_html_list_strip_html_attr($html, $attr) {
   $dom = new DOMDocument();
   $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
   $xpath = new DOMXPath($dom);
@@ -202,4 +203,14 @@ function text_to_list_strip_html_attr($html, $attr) {
   }
 
   return $dom->saveHTML();
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function text_to_html_list_field_widget_form_alter(&$element, &$form_state, $context) {
+  if ($context['instance']['widget']['type'] == 'text_to_list') {
+    $allowed_tags = array('i', 'a', 'strong', 'em', 'div', 'ul', 'ol', 'li', 'input');
+    $element['value']['#default_value'] = filter_xss($element['value']['#default_value'], $allowed_tags);
+  }
 }

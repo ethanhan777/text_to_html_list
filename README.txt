@@ -16,7 +16,7 @@ Installation
  - drush en text_to_list -y
  - administer > modules
 
-3. Change field widget for longtext to 'Text to List'
+3. Change field widget for longtext to 'Text to HTML List'
 4. In field setting, choose list type (bulleted by default)
 
 --------------------------

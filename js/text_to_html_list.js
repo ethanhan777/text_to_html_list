@@ -62,8 +62,8 @@
       function clean_html(input) {
         var bad_tags = ['style', 'script', 'applet', 'embed', 'iframe', 'noframes', 'noscript'];
         var output = input;
-        for (var i=0; i< bad_tags.length; i++) {
-          var tag_stripper = new RegExp('<'+bad_tags[i]+'.*?'+bad_tags[i]+'(.*?)>', 'gi');
+        for (var i = 0; i < bad_tags.length; i++) {
+          var tag_stripper = new RegExp('<' + bad_tags[i] + '.*?' + bad_tags[i] + '(.*?)>', 'gi');
           output = output.replace(tag_stripper, '');
         }
         return output;

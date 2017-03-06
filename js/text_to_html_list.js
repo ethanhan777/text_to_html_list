@@ -40,7 +40,7 @@
         $('.text-to-html-list-' + field_name + '-sortable i.fa-times').live('click', function () {
           $(this).parent().remove();
           $('.text-to-html-list-' + field_name + '-field .form-item .form-textarea').val($('.text-to-html-list-' + field_name + '-field-preview').html());
-          if ($('.text-to-html-list-' + field_name + '-field-preview li').length == 0) {
+          if ($('.text-to-html-list-' + field_name + '-field-preview li').length === 0) {
             $('.text-to-html-list-' + field_name + '-field .form-item .form-textarea').val('');
           }
         });
@@ -51,7 +51,7 @@
         $.each(entered_text, function (key, value) {
           value = $.trim(value);
           if (value.length !== 0) {
-            if (list_type == '2') {
+            if (list_type === '2') {
               list_output += '<div class="checklist-wrap"><input type="checkbox">' + value + '<i class="fa fa-times" aria-hidden="true"></i></div>';
             }
             else {

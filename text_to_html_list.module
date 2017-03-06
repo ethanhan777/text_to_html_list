@@ -94,7 +94,7 @@ function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $inst
             $module_path . '/js/text_to_html_list.js',
             array(
               'data' => array(
-                'text_to_html_list' => array($field_name => $list_type)
+                'text_to_html_list' => array($field_name => $list_type),
               ),
               'type' => 'setting',
             ),

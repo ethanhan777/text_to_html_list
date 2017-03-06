@@ -92,8 +92,10 @@ function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $inst
         '#attached' => array(
           'js' => array(
             $module_path . '/js/text_to_html_list.js',
-            array('data' => array(
-              'text_to_html_list' => array($field_name => $list_type)),
+            array(
+              'data' => array(
+                'text_to_html_list' => array($field_name => $list_type)
+              ),
               'type' => 'setting',
             ),
           ),
@@ -128,10 +130,6 @@ function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $inst
 
   return $element;
 
-}
-
-function text_to_html_list_field_insert($entity_type, $entity, $field, $instance, $langcode, &$items) {
-  dpm($field);
 }
 
 /**

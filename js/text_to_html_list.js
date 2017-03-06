@@ -51,7 +51,7 @@
         $.each(entered_text, function (key, value) {
           value = $.trim(value);
           if (value.length !== 0) {
-            if (list_type === '2') {
+            if (list_type == '2') {
               list_output += '<div class="checklist-wrap"><input type="checkbox">' + value + '<i class="fa fa-times" aria-hidden="true"></i></div>';
             }
             else {

@@ -13,7 +13,7 @@ Installation
 --------------------------
 1. Place this module into your Drupal modules directory eg) sites/all/modules
 2. Enable this module by drush command or web ui:
- - drush en text_to_list -y
+ - drush en text_to_html_list -y
  - administer > modules
 
 3. Change field widget for longtext to 'Text to HTML List'

@@ -10,7 +10,7 @@
  */
 function text_to_html_list_field_widget_info() {
   return array(
-    'text_to_list' => array(
+    'text_to_html_list' => array(
       'label' => t('Text to HTML List'),
       'field types' => array('text_long'),
       'settings' => array('rows' => 3),
@@ -28,7 +28,12 @@ function text_to_html_list_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
   $settings = $widget['settings'];
 
-  if ($widget['type'] == 'text_to_list') {
+  if ($widget['type'] == 'text_to_html_list') {
+    $disabled = FALSE;
+    if (field_has_data($field)) {
+      $disabled = TRUE;
+    }
+
     $form['list_type'] = array(
       '#type' => 'select',
       '#title' => t('List Type'),
@@ -39,6 +44,7 @@ function text_to_html_list_field_widget_settings_form($field, $instance) {
       ),
       '#default_value' => (isset($settings['list_type'])) ? $settings['list_type'] : 0 ,
       '#description' => t('Bulleted list by default.'),
+      '#disabled' => $disabled,
     );
   }
 
@@ -57,7 +63,7 @@ function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $inst
   $settings = $instance['widget']['settings'];
 
   switch ($key) {
-    case 'text_to_list':
+    case 'text_to_html_list':
       $list_type_html = 'ul';
       $list_type = isset($settings['list_type']) ? $settings['list_type'] : 0;
       if ($list_type == 1) {
@@ -67,7 +73,7 @@ function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $inst
         $list_type_html = 'div';
       }
 
-      $prefix = theme('text_to_list', array(
+      $prefix = theme('text_to_html_list', array(
         'key' => $key,
         'label' => $label,
         'placeholder' => $placeholder,
@@ -78,13 +84,19 @@ function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $inst
       $module_path = drupal_get_path('module', 'text_to_html_list');
       $main_widget = $element + array(
         '#attributes' => array(
-          'class' => array('edit-text-to-list'),
+          'class' => array('edit-text_to_html_list'),
         ),
         '#type' => 'textarea',
         '#title' => $label,
         '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : '',
         '#attached' => array(
-          'js' => array($module_path . '/js/text_to_html_list.js'),
+          'js' => array(
+            $module_path . '/js/text_to_html_list.js',
+            array('data' => array(
+              'text_to_html_list' => array($field_name => $list_type)),
+              'type' => 'setting',
+            ),
+          ),
           'css' => array($module_path . '/css/text_to_html_list.css'),
           'library' => array(
             array('system', 'ui.sortable'),
@@ -111,7 +123,6 @@ function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $inst
       break;
   }
 
-  drupal_add_js(array('text_to_list' => array($field_name => $list_type)), 'setting');
   $fontawesome_cdn = 'https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css';
   drupal_add_css($fontawesome_cdn, array('type' => 'external'));
 
@@ -119,12 +130,16 @@ function text_to_html_list_field_widget_form(&$form, &$form_state, $field, $inst
 
 }
 
+function text_to_html_list_field_insert($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  dpm($field);
+}
+
 /**
  * Implements hook_theme().
  */
 function text_to_html_list_theme() {
   return array(
-    'text_to_list' => array(
+    'text_to_html_list' => array(
       'template' => 'theme/text_to_html_list',
       'variables' => array(
         'key' => NULL,
@@ -142,7 +157,7 @@ function text_to_html_list_theme() {
  */
 function text_to_html_list_field_formatter_info() {
   return array(
-    'text_to_list_formatter' => array(
+    'text_to_html_list_formatter' => array(
       'label' => t('Text to HTML List'),
       'field types' => array('text_long'),
     ),
@@ -156,7 +171,7 @@ function text_to_html_list_field_formatter_view($entity_type, $entity, $field, $
   $element = array();
 
   switch ($display['type']) {
-    case 'text_to_list_formatter':
+    case 'text_to_html_list_formatter':
       foreach ($items as $delta => $item) {
         $allowed_tags = array(
           'a',
@@ -185,9 +200,9 @@ function text_to_html_list_field_formatter_view($entity_type, $entity, $field, $
  * Implements hook_field_display_alter().
  */
 function text_to_html_list_field_display_alter(&$display, $context) {
-  if ($context['instance']['widget']['type'] == 'text_to_list') {
-    $display['type'] = 'text_to_list_formatter';
-    $display['module'] = 'text_to_list';
+  if ($context['instance']['widget']['type'] == 'text_to_html_list') {
+    $display['type'] = 'text_to_html_list_formatter';
+    $display['module'] = 'text_to_html_list';
   }
 }
 
@@ -218,7 +233,7 @@ function text_to_html_list_strip_html_attr($html, $attr) {
  * Implements hook_field_widget_form_alter().
  */
 function text_to_html_list_field_widget_form_alter(&$element, &$form_state, $context) {
-  if ($context['instance']['widget']['type'] == 'text_to_list') {
+  if ($context['instance']['widget']['type'] == 'text_to_html_list') {
     $allowed_tags = array(
       'i',
       'a',

@@ -1,13 +1,13 @@
 /* list field */
-.text-to-list-field {
+.text-to-html-list-field {
   position: relative;
 }
-.text-to-list-field label {
+.text-to-html-list-field label {
   text-transform: capitalize;
   font-size: 1.25em;
 }
 
-.text-to-list-field label.preview-label {
+.text-to-html-list-field label.preview-label {
   position: absolute;
   top: 30px;
   left: 10px;
@@ -17,11 +17,11 @@
   line-height: 1em;
 }
 
-table .text-to-list-field label.preview-label {
+table .text-to-html-list-field label.preview-label {
   top: 10px;
 }
 
-.text-to-list-preview {
+.text-to-html-list-preview {
   display: block;
   min-height: 100px;
   border: solid 1px #ccc;
@@ -34,14 +34,14 @@ table .text-to-list-field label.preview-label {
   border-right: none;
   margin-bottom: 10px;
 }
-.text-to-list-preview ul {
+.text-to-html-list-preview ul {
   cursor: pointer;
 }
-.text-to-list-preview li,
-.text-to-list-preview .checklist-wrap {
+.text-to-html-list-preview li,
+.text-to-html-list-preview .checklist-wrap {
   padding: 5px 0;
 }
-.text-to-list-preview .checklist-wrap input[type=checkbox] {
+.text-to-html-list-preview .checklist-wrap input[type=checkbox] {
   margin-right: 10px;
 }
 
@@ -50,18 +50,18 @@ table .text-to-list-field label.preview-label {
   margin-bottom: 10px;
 }
 
-.text-to-list-input {
+.text-to-html-list-input {
   display: block;
   width: 100%;
   min-height: 30px;
   border: solid 1px #ccc;
 }
 
-.text-to-list-preview i.fa-times {
+.text-to-html-list-preview i.fa-times {
   margin-left: 10px;
 }
 
-.text-to-list-field .text-format-wrapper,
-.text-to-list-field .form-item {
+.text-to-html-list-field .text-format-wrapper,
+.text-to-html-list-field .form-item {
   display: none;
 }
